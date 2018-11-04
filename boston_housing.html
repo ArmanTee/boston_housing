@@ -12086,7 +12086,8 @@ Standard deviation of prices: $165171.13154429477
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong>
-The score suggests athat 92.3% of the variance of the true value is fully accounted for by the prediction, the rest is unaaccounted for. This would suggest that the model is a good fit.</p>
+The score suggests athat 92.3% of the variance of the true value is fully accounted for by the prediction, the rest is unaaccounted for. This would suggest that the model is a good fit as r^2 score describes the amount of variances that is accounted in y from x. A score of 92.3% tells us that a large percentage is accounted for by our prediction (compared to actual results).</p>
+<p>R^2 is the squre of pearson's correlation coefficient, which in turn describes the covariance between two datasets, the higher the correlation, the more  similar to the two data sets are in terms of their changing variance.</p>
 
 </div>
 </div>
@@ -12117,7 +12118,7 @@ The score suggests athat 92.3% of the variance of the true value is fully accoun
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Import &#39;train_test_split&#39;</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="n">prices</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="n">prices</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="c1"># Success</span>
@@ -12162,7 +12163,7 @@ The score suggests athat 92.3% of the variance of the true value is fully accoun
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong>
-The split allows one to apply the algorithm of choice and test/analyse the results of the model from the same sample set (under the assumption of independent sampling). A ratio is chosen to a) maximise the training set so the model is well trained onto the data, e.g not underfit. b) maximise samples used in prediction/testing in order to reduce overfitting.</p>
+The split allows one to apply the algorithm of choice and test/analyse the results of the model from the same sample set (under the assumption of independent sampling). A ratio is chosen to a) maximise the training set so the model is well trained onto the data, e.g not underfit. b) maximise samples used in prediction/testing in order to reduce overfitting.  Using the same data for testing and training doesn't let one know if the data is overfit, as the data has been trained on the test set, and there's no way of knowing it's predictiion capabilities in generality.</p>
 
 </div>
 </div>
@@ -13882,8 +13883,13 @@ Essentially you allow for a range (exponentially increasing) of possible paramet
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<p>Data set is split into buckets or k-folds of equal size.
-Each time a set is used, one bucket becomes testing set and the rest of the buckets are used to train.</p>
+<ul>
+<li>Data is split into train and test set as normal. </li>
+<li>Training set is then  applied with a k-fold on the dataset.</li>
+<li>Train model on k-1 of the buckets/folds</li>
+<li>1 fold is used for cross validation</li>
+<li>Average cross validation score is used to check the performance of the model</li>
+</ul>
 <p>More reliable estimate of out-of-sample performance than train/test split.
 Reduce the variance of a single trial of a train/test split.
 Hence, with the benefits of k-fold cross-validation, we're able to use the average testing accuracy as a benchmark to decide which is the most optimal set of parameters for the learning algorithm.</p>
@@ -13922,7 +13928,7 @@ Hence, with the benefits of k-fold cross-validation, we're able to use the avera
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">######## Model fit ##########</span>
@@ -13941,7 +13947,7 @@ Hence, with the benefits of k-fold cross-validation, we're able to use the avera
     <span class="n">regressor</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
     <span class="c1"># TODO: Create a dictionary for the parameter &#39;max_depth&#39; with a range from 1 to 10</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]}</span>
 
     <span class="c1"># TODO: Transform &#39;performance_metric&#39; into a scoring function using &#39;make_scorer&#39; </span>
     <span class="n">scoring_fnc</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">performance_metric</span><span class="p">)</span>
@@ -13990,7 +13996,7 @@ Hence, with the benefits of k-fold cross-validation, we're able to use the avera
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Fit the training data to the model using grid search</span>
@@ -14026,7 +14032,7 @@ Hence, with the benefits of k-fold cross-validation, we're able to use the avera
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong> Hint: </strong> The answer comes from the output of the code snipped above.</p>
 <p><strong>Answer: </strong>
-Parameter 'max_depth' is 4 for the optimal model.</p>
+Parameter 'max_depth' is 4 for the optimal model. This the same as the answer in Q6.</p>
 
 </div>
 </div>
@@ -14118,9 +14124,18 @@ Predicted selling price for Client 3&#39;s home: $973,560.00
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong>
-Predicted selling price for Client 1's home: $412,212.50
-Predicted selling price for Client 2's home: $232,913.33
-Predicted selling price for Client 3's home: $973,560.00</p>
+-Predicted selling price for Client 1's home: $412,212.50
+-Predicted selling price for Client 2's home: $232,913.33
+-Predicted selling price for Client 3's home: $973,560.00</p>
+<p>Some statistics:
+Minimum price: $105000.0
+Maximum price: $1024800.0
+Mean price: $454342.9447852761
+Median price $438900.0
+Standard deviation of prices: $165171.13154429477</p>
+<p>Client 1: The price falls near the median/mean levels, with the actual features also resembling a mid point for each of them compared to the other clients' data. This seems accruate.
+Client 2: The price falls on the lower quatertiles of the  the median/mean levels, with the actual features also resembling a lowest points for each of them compared to the other clients' data. This seems accruate. Features such as high poverty rates would explain why this falls in the lower bounds of the prices.
+Client 3: The price falls on the higher quatertiles of the  the median/mean levels, with the actual features also resembling a highest points for each of them compared to the other clients' data. This seems accruate. Low poverty rates would explain very well why this house price is at the higher ends of the data bounds.</p>
 <p>All prices seem reasonable, as the initial estimate that a low student/teacher ratio would mean higher prices is reflected here. Additonality the lower poverty levels lead to higher prices.</p>
 
 </div>
@@ -14213,6 +14228,7 @@ Range in prices: $69,044.61
 <li><p>To some extent, yes it can be fair to price houses based on the neighbourhood. Apart from the actual building costs and features such as room numbers of the house, large percentage of what makes up the house is the vicinity of it's placement. Things like commute distance into the center, number of good schools in the area have huge effects on house prices.</p>
 </li>
 </ul>
+<p>Therefore I would say that we can use this model in the real world, It would be beneficial to a) investigate addition of extra features on output b) adjusting for inflation</p>
 
 </div>
 </div>
